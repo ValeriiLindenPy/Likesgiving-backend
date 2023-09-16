@@ -3,8 +3,13 @@ from datetime import timedelta
 from rest_framework.settings import api_settings
 from dotenv import load_dotenv
 import os
+import logging
 
 load_dotenv()
+
+
+logging.getLogger("boto3").setLevel(logging.DEBUG)
+logging.getLogger("botocore").setLevel(logging.DEBUG)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -32,6 +37,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "knox",
+    "storages",
     "api",
 ]
 
@@ -47,7 +53,8 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:8001",  # The origin of your React app
+    "http://localhost:4000",
+    # The origin of your React app
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -64,7 +71,7 @@ REST_KNOX = {
     "SECURE_HASH_ALGORITHM": "cryptography.hazmat.primitives.hashes.SHA512",
     "AUTH_TOKEN_CHARACTER_LENGTH": 64,
     "TOKEN_TTL": timedelta(
-        minutes=45
+        days=90
     ),  # The default is 10 hours i.e., timedelta(hours=10)).
     "USER_SERIALIZER": "knox.serializers.UserSerializer",
     "TOKEN_LIMIT_PER_USER": None,
@@ -128,7 +135,41 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+
+# Extra lookup directories for collectstatic to find static files
+
+
 STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+MEDIA_URLS = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
+# S3
+
+S3 = True
+
+if S3:
+    AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_SIGNATURE_NAME = ("s3v4",)
+    AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME")
+    AWS_S3_FILE_OVERWRITE = True
+    AWS_DEFAULT_ACL = None
+    AWS_S3_VERITY = True
+    DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    STATICFILES_STORAGE = "storages.backends.s3boto3.S3StaticStorage"
+
+
+# Email Config
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = "thelikesgiving@gmail.com"
+EMAIL_HOST_PASSWORD = "fafdxjjxscmfujtq"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_TIMEOUT = 300
+DEFAULT_FROM_EMAIL = "thelikesgiving@gmail.com"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

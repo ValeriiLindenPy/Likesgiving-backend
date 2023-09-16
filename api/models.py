@@ -50,17 +50,15 @@ class Profile(AbstractBaseUser, PermissionsMixin):
 
 class Post(models.Model):
     POST_TYPE_CHOICES = [
-        ("hate", "Hate"),
-        ("love", "Love"),
+        ("dislike", "Dislike"),
+        ("like", "Like"),
     ]
-    post_type = models.CharField(max_length=4, choices=POST_TYPE_CHOICES)
+    post_type = models.CharField(max_length=7, choices=POST_TYPE_CHOICES)
+    emotion = models.CharField(max_length=20)
     text = models.TextField()
     picture = models.ImageField(blank=True, null=True)
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
     likes = models.ManyToManyField(Profile, blank=True, related_name="liked_posts")
-    comments = models.ManyToManyField(
-        Profile, through="Comment", blank=True, related_name="commented_posts"
-    )
     date_created = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
@@ -68,9 +66,6 @@ class Post(models.Model):
 
     def total_likes(self):
         return self.likes.count()
-
-    def total_comments(self):
-        return self.comments.count()
 
 
 class Comment(models.Model):

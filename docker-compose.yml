@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  web:
+    build: .
+    image: valeriilinden/web:latest
+    container_name: ihlserver
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: ihldb
+    environment:
+      POSTGRES_DB: ${NAME_PG}
+      POSTGRES_USER: ${USER_PG}
+      POSTGRES_PASSWORD: ${PASSWORD_PG}
+      POSTGRES_HOST: ${HOST_PG}
+      POSTGRES_PORT: ${PORT_PG}

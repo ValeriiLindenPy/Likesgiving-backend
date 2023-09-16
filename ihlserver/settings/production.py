@@ -3,14 +3,13 @@ from .base import *
 ALLOWED_HOSTS = ["*"]
 
 
-# Database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.environ.get('DATABASE_NAME'),
-#         'USER': os.environ.get('DATABASE_USER'),
-#         'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-#         'HOST': os.environ.get('DATABASE_HOST'),
-#         'PORT': os.environ.get('DATABASE_PORT'),
-#     }
-# }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("NAME_PG"),
+        "USER": os.environ.get("USER_PG"),
+        "PASSWORD": os.environ.get("PASSWORD_PG"),
+        "HOST": os.environ.get("HOST_PG"),
+        "PORT": os.environ.get("PORT_PG"),
+    }
+}

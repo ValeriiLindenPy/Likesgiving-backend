@@ -14,6 +14,10 @@ class AdminConfig(UserAdmin):
     ]
 
 
-admin.site.register(Post)
+@admin.register(Post)
+class PersonAdmin(admin.ModelAdmin):
+    autocomplete_fields = ["likes"]
+
+
 admin.site.register(Comment)
 admin.site.register(Profile, AdminConfig)
