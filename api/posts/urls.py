@@ -1,20 +1,18 @@
-from django.urls import path
+from django.urls import include, path
 
 from knox import views as knox_views
 
 from .views import *
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r"post", PostViewSet, basename="post")
 
 
 urlpatterns = [
-    path("create_post/", CreatePost.as_view(), name="create-post"),
+    path("v1/", include(router.urls)),
     path("add_comment/<int:pk>/", AddComment.as_view(), name="add-comment"),
-    path("get_posts/", ShowAllPosts.as_view(), name="get-posts"),
     path("get_comments/<int:pk>/", ShowAllPostComment.as_view(), name="get-comments"),
-    path(
-        "get_posts/<str:post_type>/",
-        ShowAllPostsByType.as_view(),
-        name="show-posts-by-type",
-    ),
     path("add-like/<int:pk>/", AddLike.as_view(), name="add-like"),
     path("get_statistics/", GetTodayStatistics.as_view(), name="get-statistics"),
     path(

@@ -5,8 +5,58 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from datetime import date, datetime, timedelta
 from django.utils import timezone
-
+from django_filters.rest_framework import DjangoFilterBackend
 from knox.auth import TokenAuthentication
+from rest_framework import filters
+from rest_framework import mixins
+from rest_framework import viewsets
+
+
+# ViewSets
+
+
+class PostViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ["post_type"]
+    ordering = ["-date_created"]
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        # Get the current user
+        print(self.request)
+
+        user = self.request.user
+
+        # Calculate the date range for posts (today and yesterday)
+        today = timezone.now().date()
+        yesterday = today - timedelta(days=1)
+
+        # Count the number of posts created by the user today and yesterday
+        posts_today = Post.objects.filter(author=user, date_created__date=today).count()
+        posts_yesterday = Post.objects.filter(
+            author=user, date_created__date=yesterday
+        ).count()
+
+        # Check if the user has already created 10 posts today
+        if posts_today >= 10:
+            return Response(
+                {"error": "You have reached the maximum limit of 10 posts per day."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            serializer.save(author=user)
+
+
+############################################3
 
 
 class GetTodayStatistics(APIView):
@@ -35,24 +85,6 @@ class GetTodayStatistics(APIView):
                 "yesterday_hates": hate_post_amount_yesterday,
             }
         )
-
-
-class ShowAllPosts(generics.ListAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-
-
-class ShowAllPostsByType(generics.ListAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = PostSerializer
-
-    def get_queryset(self):
-        post_type = self.kwargs.get(
-            "post_type"
-        )  # Assuming you are passing the post_type in the URL
-        queryset = Post.objects.filter(post_type=post_type).order_by("-date_created")
-        return queryset
 
 
 class ShowAllPostComment(APIView):
@@ -92,38 +124,6 @@ class RemainingPostsTodayView(generics.RetrieveAPIView):
             "remaining_posts_today": remaining_posts_today,
         }
         return Response(response_data, status=status.HTTP_200_OK)
-
-
-class CreatePost(generics.CreateAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = Post.objects.all()
-    serializer_class = PostCreateSerializer
-
-    def perform_create(self, serializer):
-        # Get the current user
-        print(self.request)
-
-        user = self.request.user
-
-        # Calculate the date range for posts (today and yesterday)
-        today = timezone.now().date()
-        yesterday = today - timedelta(days=1)
-
-        # Count the number of posts created by the user today and yesterday
-        posts_today = Post.objects.filter(author=user, date_created__date=today).count()
-        posts_yesterday = Post.objects.filter(
-            author=user, date_created__date=yesterday
-        ).count()
-
-        # Check if the user has already created 5 posts today
-        if posts_today >= 5:
-            return Response(
-                {"error": "You have reached the maximum limit of 5 posts per day."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        # Allow the user to create the post
-        serializer.save(author=user)
 
 
 class AddComment(generics.CreateAPIView):

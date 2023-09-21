@@ -29,11 +29,21 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     post_comments = CommentSerializer(many=True, read_only=True)
-    author = ProfileSerializer()
+    author = ProfileSerializer(read_only=True)
 
     class Meta:
         model = Post
-        fields = "__all__"
+        fields = [
+            "id",
+            "emotion",
+            "post_type",
+            "text",
+            "post_comments",
+            "author",
+            "picture",
+            "likes",
+            "date_created",
+        ]
 
 
 class PostCreateSerializer(serializers.ModelSerializer):
