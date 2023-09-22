@@ -1,12 +1,15 @@
 from rest_framework import serializers
 from api.models import Post, Comment
 from api.models import Profile
+from api.auth.serializers import UserSerializer
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = Comment
-        fields = "__all__"
+        fields = ["id", "user", "post", "text", "date_created"]
 
 
 class LikeUpdateSerializer(serializers.ModelSerializer):
