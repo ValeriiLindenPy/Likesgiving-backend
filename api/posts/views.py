@@ -56,6 +56,37 @@ class PostViewSet(
             serializer.save(author=user)
 
 
+class CommentViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ["post"]
+    ordering = ["date_created"]
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def create(self, request, *args, **kwargs):
+        post_id = request.query_params.get(
+            "post"
+        )  # Retrieve the "post" parameter from query parameters
+        try:
+            post = Post.objects.get(pk=post_id)
+        except Post.DoesNotExist:
+            return Response(
+                {"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user, post=post)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
 ############################################3
 
 

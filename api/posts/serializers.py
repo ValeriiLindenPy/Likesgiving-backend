@@ -11,6 +11,24 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ["id", "user", "post", "text", "date_created"]
 
+    def create(self, validated_data):
+        request = self.context.get("request")
+
+        # Retrieve the "post" parameter from query parameters
+        post_id = request.query_params.get("post")
+
+        try:
+            post = Post.objects.get(pk=post_id)
+        except Post.DoesNotExist:
+            raise serializers.ValidationError({"post": "Post not found"})
+
+        # Add the "post" to the validated data
+        validated_data["post"] = post
+
+        # Create the comment
+        comment = Comment.objects.create(**validated_data)
+        return comment
+
 
 class LikeUpdateSerializer(serializers.ModelSerializer):
     class Meta:
