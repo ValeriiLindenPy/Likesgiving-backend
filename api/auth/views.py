@@ -144,4 +144,16 @@ class ShowProfileData(generics.GenericAPIView):
         # Get the profile for the currently authenticated user
         profile = Profile.objects.get(email=request.user.email)
         serializer = self.get_serializer(instance=profile)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        like_posts_count = Post.objects.filter(author=profile, post_type="like").count()
+        dislike_posts_count = Post.objects.filter(
+            author=profile, post_type="dislike"
+        ).count()
+
+        # Add the counts to the serializer data
+        data = serializer.data
+        statistics = {
+            "like_posts": like_posts_count,
+            "dislike_posts": dislike_posts_count,
+        }
+        data["statistics"] = statistics
+        return Response(data, status=status.HTTP_200_OK)
