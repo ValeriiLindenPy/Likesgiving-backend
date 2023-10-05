@@ -1,5 +1,7 @@
 from .base import *
 
+# TODO: I would be specific about the dns allowed here
+# TODO: I would put DEBUG=False in production to prevent hackers to find potential breaches in the debugging window
 ALLOWED_HOSTS = ["*"]
 
 

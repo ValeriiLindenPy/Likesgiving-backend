@@ -1,3 +1,4 @@
+# TODO: Unused imports to clean up + sort imports
 # django imports
 import json
 from django.contrib.auth import login
@@ -24,6 +25,9 @@ class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer
 
 
+# TODO: Can you reuse ObtainToken view
+#   and add your customisation at the top of it
+#   instead of reinventing the wheel?
 class LoginView(generics.GenericAPIView):
     # login view extending KnoxLoginView
     serializer_class = AuthSerializer
@@ -51,6 +55,8 @@ class LoginView(generics.GenericAPIView):
         )
 
 
+# TODO: The naming is a bitconfusing
+#   Is that for a profile or a user?
 class UpdateUserView(generics.UpdateAPIView):
     queryset = Profile.objects.all()
     serializer_class = UpdateUserDataSerializer

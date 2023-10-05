@@ -39,15 +39,22 @@ class PostViewSet(
         # Calculate the date range for posts (today and yesterday)
         today = timezone.now().date()
         yesterday = today - timedelta(days=1)
+        # TODO: This block could be in a utility function
+        #   It will help the view to stay simple and readable
 
         # Count the number of posts created by the user today and yesterday
         posts_today = Post.objects.filter(author=user, date_created__date=today).count()
         posts_yesterday = Post.objects.filter(
             author=user, date_created__date=yesterday
         ).count()
+        # TODO: I would put this in a utility function as well
+        #   You can also look at queryset manager to put this block. It might not be indispensable here
+        #   but it can help you to understand how to use those if you never tried before
 
         # Check if the user has already created 10 posts today
         if posts_today >= 10:
+            # TODO: here i would use
+            #   raise BadRequest(You have reached the maximum limit of 10 posts per day.")
             return Response(
                 {"error": "You have reached the maximum limit of 10 posts per day."},
                 status=status.HTTP_400_BAD_REQUEST,

@@ -69,11 +69,18 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
+    # TODO: Could you tell more about the comment? quick description of comment
+    #   Why is this model used? (to help any novice on your project)
+    # TODO: If a profile is deleted, do you also want to delete comments of the user
+    #   Or keep the user as anonymous?
     user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="comments")
     post = models.ForeignKey(
         Post, on_delete=models.CASCADE, related_name="post_comments"
     )
     text = models.TextField()
+    # TODO: You can also give description of a field using help_text().
+    #   For example help_text = "Text contained in the comment"
+    #   https://www.geeksforgeeks.org/help_text-django-built-in-field-validation/
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

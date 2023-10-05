@@ -11,7 +11,16 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ["id", "user", "post", "text", "date_created"]
 
+    # TODO: You are inheriting from post, do you need to do this check manually
+    #   Or can you use the integrity constraint resulting in a invalid serializer
     def create(self, validated_data):
+
+        # TODO: Can you add docstring to explain what this method is doing?
+
+        # TODO: It looks like you could reuse the super.create behavior
+        #   instead of redoing everything here?
+        #   I think this method can be simplified, you can investigate into it
+
         request = self.context.get("request")
 
         # Retrieve the "post" parameter from query parameters
@@ -32,10 +41,16 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class LikeUpdateSerializer(serializers.ModelSerializer):
     class Meta:
+        # TODO: This is a bit confusing, I would rename LikeUpdateSerializer to PostUpdateSerializer
+        #   Because the model here is Post to keep it consistent
+        #   Therefore, I understand that you named it LikeUpdateSerializer
+        #   because only related to likes on the Post model
+        #   So choose, what you think is best on this one
         model = Post
         fields = ["likes"]
 
 
+# TODO: Since we have a viewset, is this still used?
 class AddCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
@@ -67,6 +82,7 @@ class PostSerializer(serializers.ModelSerializer):
         ]
 
 
+# TODO: Please remove this serializer if unused
 class PostCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post

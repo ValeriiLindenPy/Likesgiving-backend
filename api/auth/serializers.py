@@ -1,3 +1,4 @@
+# TODO: Clear unused import
 from api.models import Profile
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth import password_validation
@@ -5,6 +6,7 @@ from rest_framework import serializers
 
 
 class UserSerializer(serializers.ModelSerializer):
+    # TODO: Docstring starts with a uppercase letter
     """serializer for the user object"""
 
     class Meta:
@@ -17,6 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class AuthSerializer(serializers.Serializer):
+    # TODO: Docstring starts with a uppercase letter
     """serializer for the user authentication object"""
 
     email = serializers.EmailField()
@@ -30,6 +33,7 @@ class AuthSerializer(serializers.Serializer):
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
+    # TODO: Docstring starts with a uppercase letter
     """serializer for show user data"""
 
     class Meta:
