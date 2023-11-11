@@ -91,6 +91,7 @@ class ResetPasswordView(views.APIView):
                     from_email=None,
                     recipient_list=[email],
                     fail_silently=False,
+                    html_message="<h1></h1>",
                 )
 
                 return Response(

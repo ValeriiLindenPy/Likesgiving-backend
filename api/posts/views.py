@@ -10,23 +10,16 @@ from knox.auth import TokenAuthentication
 from rest_framework import filters
 from rest_framework import mixins
 from rest_framework import viewsets
-
+from django.db import models
 
 # ViewSets
 
 
-class PostViewSet(
-    mixins.CreateModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet,
-):
+class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ["post_type"]
+    filterset_fields = ["post_type", "author"]
     ordering = ["-date_created"]
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -56,12 +49,7 @@ class PostViewSet(
             serializer.save(author=user)
 
 
-class CommentViewSet(
-    mixins.CreateModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet,
-):
+class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
@@ -95,27 +83,50 @@ class GetTodayStatistics(APIView):
 
     def get(self, request):
         today = timezone.now().date()
-        yesterday = timezone.now() - timedelta(days=1)
-        love_post_amount_today = Post.objects.filter(
-            date_created__date=today, post_type="love"
+        yesterday = today - timedelta(days=1)
+
+        like_post_amount_today = Post.objects.filter(
+            date_created__date=today, post_type="like"
         ).count()
-        hate_post_amount_today = Post.objects.filter(
-            date_created__date=today, post_type="hate"
+        dislike_post_amount_today = Post.objects.filter(
+            date_created__date=today, post_type="dislike"
         ).count()
-        love_post_amount_yesterday = Post.objects.filter(
-            date_created__date=yesterday, post_type="love"
+        like_post_amount_yesterday = Post.objects.filter(
+            date_created__date=yesterday, post_type="like"
         ).count()
-        hate_post_amount_yesterday = Post.objects.filter(
-            date_created__date=yesterday, post_type="hate"
+        dislike_post_amount_yesterday = Post.objects.filter(
+            date_created__date=yesterday, post_type="dislike"
         ).count()
-        return Response(
-            {
-                "today_loves": love_post_amount_today,
-                "today_hates": hate_post_amount_today,
-                "yesterday_loves": love_post_amount_yesterday,
-                "yesterday_hates": hate_post_amount_yesterday,
-            }
+
+        # Retrieve the post with the most likes
+        posts_yesterday = Post.objects.filter(date_created__date=yesterday)
+        most_liked_post = (
+            posts_yesterday.annotate(like_count=models.Count("likes"))
+            .order_by("-like_count")
+            .first()
         )
+
+        if most_liked_post:
+            most_liked_post_serializer = PostSerializer(most_liked_post)
+            return Response(
+                {
+                    "today_likes": like_post_amount_today,
+                    "today_dislikes": dislike_post_amount_today,
+                    "yesterday_likes": like_post_amount_yesterday,
+                    "yesterday_dislikes": dislike_post_amount_yesterday,
+                    "top_post": most_liked_post_serializer.data,
+                }
+            )
+        else:
+            return Response(
+                {
+                    "today_likes": like_post_amount_today,
+                    "today_dislikes": dislike_post_amount_today,
+                    "yesterday_likes": like_post_amount_yesterday,
+                    "yesterday_dislikes": dislike_post_amount_yesterday,
+                    "top_post": None,
+                }
+            )
 
 
 class ShowAllPostComment(APIView):
