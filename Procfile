@@ -1,1 +1,1 @@
-web: gunicorn corrila.wsgi
+web gunicorn ihlserver.wsgi:application --log-file -
