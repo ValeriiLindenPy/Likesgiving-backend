@@ -55,7 +55,15 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+ALLOWED_HOSTS = [
+    "ihl-project-606adf7a8500.herokuapp.com",
+    "thanksgiving-j6r1q1qck-valeriis-projects-0ac1b84e.vercel.app"
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://thanksgiving-j6r1q1qck-valeriis-projects-0ac1b84e.vercel.app",
+    "https://ihl-project-606adf7a8500.herokuapp.com/",
+]
 
 CORS_ALLOW_CREDENTIALS = True
 
