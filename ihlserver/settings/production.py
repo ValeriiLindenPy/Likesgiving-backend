@@ -1,6 +1,6 @@
 from .base import *
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["ihl-project-606adf7a8500.herokuapp.com"]
 
 
 # DATABASES = {
