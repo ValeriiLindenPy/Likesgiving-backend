@@ -58,13 +58,15 @@ MIDDLEWARE = [
 ALLOWED_HOSTS = [
     "ihl-project-606adf7a8500.herokuapp.com",
     "https://thanksgiving-two.vercel.app",
-    "thanksgiving-j6r1q1qck-valeriis-projects-0ac1b84e.vercel.app"
+    "thanksgiving-j6r1q1qck-valeriis-projects-0ac1b84e.vercel.app",
+    "http://localhost:4000",
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "https://thanksgiving-j6r1q1qck-valeriis-projects-0ac1b84e.vercel.app",
     "https://thanksgiving-two.vercel.app",
     "https://ihl-project-606adf7a8500.herokuapp.com",
+    "http://localhost:4000",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
