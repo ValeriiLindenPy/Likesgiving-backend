@@ -59,8 +59,8 @@ ALLOWED_HOSTS = [
     "ihl-project-606adf7a8500.herokuapp.com",
     "likesgiving-two.vercel.app",
     "https://thanksgiving-two.vercel.app",
-    "thanksgiving-j6r1q1qck-valeriis-projects-0ac1b84e.vercel.app",
     "http://localhost:4000",
+    "https://likesgiving-two.vercel.app",
 ]
 
 CORS_ALLOWED_ORIGINS = [
