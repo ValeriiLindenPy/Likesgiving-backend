@@ -68,6 +68,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://thanksgiving-two.vercel.app",
     "https://ihl-project-606adf7a8500.herokuapp.com",
     "http://localhost:4000",
+    "https://likesgiving-two.vercel.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
