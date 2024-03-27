@@ -16,13 +16,11 @@ logging.getLogger("botocore").setLevel(logging.DEBUG)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = False
 
 
@@ -89,7 +87,7 @@ REST_KNOX = {
     "AUTH_TOKEN_CHARACTER_LENGTH": 64,
     "TOKEN_TTL": timedelta(
         days=90
-    ),  # The default is 10 hours i.e., timedelta(hours=10)).
+    ),  
     "USER_SERIALIZER": "knox.serializers.UserSerializer",
     "TOKEN_LIMIT_PER_USER": None,
     "AUTO_REFRESH": True,
@@ -119,7 +117,7 @@ WSGI_APPLICATION = "ihlserver.wsgi.application"
 
 
 # Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -138,7 +136,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
+
 
 LANGUAGE_CODE = "en-us"
 
@@ -150,10 +148,7 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-
-# Extra lookup directories for collectstatic to find static files
 
 
 STATIC_URL = "static/"
@@ -182,11 +177,11 @@ if S3:
 # Email Config
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_HOST_USER = "thelikesgiving@gmail.com"
-EMAIL_HOST_PASSWORD = "fafdxjjxscmfujtq"
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_TIMEOUT = 300
-DEFAULT_FROM_EMAIL = "thelikesgiving@gmail.com"
+DEFAULT_FROM_EMAIL = "theliksesgiving@gmail.com"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
