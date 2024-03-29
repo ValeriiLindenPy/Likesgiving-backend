@@ -82,26 +82,18 @@ class GetTodayStatistics(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
-        today = timezone.now().date()
-        yesterday = today - timedelta(days=1)
 
-        like_post_amount_today = Post.objects.filter(
-            date_created__date=today, post_type="like"
+        like_post_amount = Post.objects.filter(
+         post_type="like"
         ).count()
-        dislike_post_amount_today = Post.objects.filter(
-            date_created__date=today, post_type="dislike"
-        ).count()
-        like_post_amount_yesterday = Post.objects.filter(
-            date_created__date=yesterday, post_type="like"
-        ).count()
-        dislike_post_amount_yesterday = Post.objects.filter(
-            date_created__date=yesterday, post_type="dislike"
+        dislike_post_amount = Post.objects.filter(
+         post_type="dislike"
         ).count()
 
         # Retrieve the post with the most likes
-        posts_yesterday = Post.objects.filter(date_created__date=yesterday)
+        post_objects = Post.objects.all()
         most_liked_post = (
-            posts_yesterday.annotate(like_count=models.Count("likes"))
+            post_objects.annotate(like_count=models.Count("likes"))
             .order_by("-like_count")
             .first()
         )
@@ -110,20 +102,16 @@ class GetTodayStatistics(APIView):
             most_liked_post_serializer = PostSerializer(most_liked_post)
             return Response(
                 {
-                    "today_likes": like_post_amount_today,
-                    "today_dislikes": dislike_post_amount_today,
-                    "yesterday_likes": like_post_amount_yesterday,
-                    "yesterday_dislikes": dislike_post_amount_yesterday,
+                    "today_likes": like_post_amount,
+                    "today_dislikes": dislike_post_amount,
                     "top_post": most_liked_post_serializer.data,
                 }
             )
         else:
             return Response(
                 {
-                    "today_likes": like_post_amount_today,
-                    "today_dislikes": dislike_post_amount_today,
-                    "yesterday_likes": like_post_amount_yesterday,
-                    "yesterday_dislikes": dislike_post_amount_yesterday,
+                    "today_likes": like_post_amount,
+                    "today_dislikes": dislike_post_amount,
                     "top_post": None,
                 }
             )

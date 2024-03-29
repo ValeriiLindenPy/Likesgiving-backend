@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 
-DEBUG = False
+DEBUG = True
 
 
 # Application definition
@@ -54,6 +54,7 @@ MIDDLEWARE = [
 ]
 
 ALLOWED_HOSTS = [
+    "'127.0.0.1:8000",
     "ihl-project-606adf7a8500.herokuapp.com",
     "likesgiving-two.vercel.app",
     "https://thanksgiving-two.vercel.app",
